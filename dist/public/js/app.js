@@ -10640,7 +10640,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         key: "default",
         fn: function fn(ref) {
           var item = ref.item;
-          return _c("tr", {}, [_c("td", [_vm._v(_vm._s(item.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(item.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(item.company))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(item.email))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(item.group))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(Number(item.total_revenue).toFixed(2)))])]);
+          return _c("tr", {}, [_c("td", [_vm._v(_vm._s(item.id))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(item.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(item.company))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(item.email))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(item.group))]), _vm._v(" "), _c("td", [_vm._v("$" + _vm._s(Number(item.total_revenue).toFixed(2)))])]);
         }
       }])
     }, "filterable", _vm.filterable, false), [_c("thead", { attrs: { slot: "thead" }, slot: "thead" }, [_c("tr", [_c("th", [_vm._v("Id")]), _vm._v(" "), _c("th", [_vm._v("Name")]), _vm._v(" "), _c("th", [_vm._v("Company")]), _vm._v(" "), _c("th", [_vm._v("Email")]), _vm._v(" "), _c("th", [_vm._v("Group")]), _vm._v(" "), _c("th", [_vm._v("Total Revenue")])])])])], 1)]);
@@ -10786,7 +10786,34 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       }
     }, [_c("option", { attrs: { value: "and" } }, [_vm._v("All")]), _vm._v(" "), _c("option", { attrs: { value: "or" } }, [_vm._v("Any")])]), _vm._v(" "), _c("span", [_vm._v("of the following:")])])]), _vm._v(" "), _c("div", { staticClass: "panel-body" }, [_c("table", { staticClass: "table" }, [_vm._t("thead"), _vm._v(" "), _c("tbody", [_vm._l(_vm.collection.data, function (item) {
       return _vm.collection.data && _vm.collection.data.length ? _vm._t("default", null, { item: item }) : _vm._e();
-    })], 2)], 2)])])]);
+    })], 2)], 2)]), _vm._v(" "), _c("div", { staticClass: "panel-footer" }, [_c("div", [_c("select", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.query.limit,
+        expression: "query.limit"
+      }],
+      attrs: { disabled: _vm.loading },
+      on: {
+        change: [function ($event) {
+          var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+            return o.selected;
+          }).map(function (o) {
+            var val = "_value" in o ? o._value : o.value;
+            return val;
+          });
+          _vm.$set(_vm.query, "limit", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+        }, _vm.updateLimit]
+      }
+    }, [_c("option", [_vm._v("10")]), _vm._v(" "), _c("option", [_vm._v("15")]), _vm._v(" "), _c("option", [_vm._v("25")]), _vm._v(" "), _c("option", [_vm._v("50")])]), _vm._v(" "), _c("small", [_vm._v("Showing " + _vm._s(_vm.collection.from) + " - " + _vm._s(_vm.collection.to) + " of " + _vm._s(_vm.collection.total) + " entries.")])]), _vm._v(" "), _c("div", [_c("button", {
+      staticClass: "btn",
+      attrs: { disabled: !_vm.collection.prev_page_url || _vm.loading },
+      on: { click: _vm.prevPage }
+    }, [_vm._v("« Prev")]), _vm._v(" "), _c("button", {
+      staticClass: "btn",
+      attrs: { disabled: !_vm.collection.next_page_url || _vm.loading },
+      on: { click: _vm.nextPage }
+    }, [_vm._v("Next »")])])])])]);
   };
   var staticRenderFns = [];
   render._withStripped = true;
@@ -10810,6 +10837,33 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   /* harmony import */var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
   /* harmony import */var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(26);
   /* harmony import */var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }return target;
+  };
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
   //
   //
   //
@@ -10863,10 +10917,30 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     },
 
     methods: {
+      applyChange: function applyChange() {
+        this.fetch();
+      },
+      updateLimit: function updateLimit() {
+        this.query.page = 1;
+        this.applyChange();
+      },
+      prevPage: function prevPage() {
+        if (this.collection.prev_page_url) {
+          this.query.page = Number(this.query.page) - 1;
+          this.applyChange();
+        }
+      },
+      nextPage: function nextPage() {
+        if (this.collection.next_page_url) {
+          this.query.page = Number(this.query.page) + 1;
+          this.applyChange();
+        }
+      },
       fetch: function fetch() {
         var _this = this;
 
-        __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(this.url).then(function (res) {
+        var params = _extends({}, this.query);
+        __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(this.url, { params: params }).then(function (res) {
           __WEBPACK_IMPORTED_MODULE_0_vue___default.a.set(_this.$data, 'collection', res.data.collection);
           _this.query.page = res.data.collection.current_page;
         }).catch(function (error) {}).finally(function () {

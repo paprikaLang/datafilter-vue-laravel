@@ -22,6 +22,23 @@
                     </tbody>
                 </table>
             </div>
+            <div class="panel-footer">
+                <div>
+                    <select v-model="query.limit" :disabled="loading" @change="updateLimit">
+                        <option>10</option>
+                        <option>15</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                    <small>Showing {{collection.from}} - {{collection.to}} of {{collection.total}} entries.</small>
+                </div>
+                <div>
+                    <button class="btn" :disabled="!collection.prev_page_url || loading"
+                            @click="prevPage">&laquo; Prev</button>
+                    <button class="btn" :disabled="!collection.next_page_url || loading"
+                            @click="nextPage">Next &raquo;</button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -51,8 +68,32 @@
             this.fetch()
         },
         methods: {
+            applyChange() {
+                this.fetch()
+            },
+            updateLimit() {
+                this.query.page = 1
+                this.applyChange()
+
+            },
+            prevPage() {
+                if (this.collection.prev_page_url) {
+                    this.query.page = Number(this.query.page) - 1
+                    this.applyChange()
+                }
+
+            },
+            nextPage() {
+                if (this.collection.next_page_url) {
+                    this.query.page = Number(this.query.page) + 1
+                    this.applyChange()
+                }
+            },
             fetch(){
-                axios.get(this.url)
+                const params = {
+                    ...this.query
+                }
+                axios.get(this.url,{params: params})
                     .then(res => {
                     Vue.set(this.$data,'collection',res.data.collection);
                     this.query.page = res.data.collection.current_page;

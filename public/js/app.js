@@ -11955,6 +11955,88 @@ var render = function() {
           ],
           2
         )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "panel-footer" }, [
+        _c("div", [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.query.limit,
+                  expression: "query.limit"
+                }
+              ],
+              attrs: { disabled: _vm.loading },
+              on: {
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.query,
+                      "limit",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  },
+                  _vm.updateLimit
+                ]
+              }
+            },
+            [
+              _c("option", [_vm._v("10")]),
+              _vm._v(" "),
+              _c("option", [_vm._v("15")]),
+              _vm._v(" "),
+              _c("option", [_vm._v("25")]),
+              _vm._v(" "),
+              _c("option", [_vm._v("50")])
+            ]
+          ),
+          _vm._v(" "),
+          _c("small", [
+            _vm._v(
+              "Showing " +
+                _vm._s(_vm.collection.from) +
+                " - " +
+                _vm._s(_vm.collection.to) +
+                " of " +
+                _vm._s(_vm.collection.total) +
+                " entries."
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", [
+          _c(
+            "button",
+            {
+              staticClass: "btn",
+              attrs: { disabled: !_vm.collection.prev_page_url || _vm.loading },
+              on: { click: _vm.prevPage }
+            },
+            [_vm._v("« Prev")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn",
+              attrs: { disabled: !_vm.collection.next_page_url || _vm.loading },
+              on: { click: _vm.nextPage }
+            },
+            [_vm._v("Next »")]
+          )
+        ])
       ])
     ])
   ])
@@ -11979,6 +12061,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -12033,10 +12134,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
+        applyChange: function applyChange() {
+            this.fetch();
+        },
+        updateLimit: function updateLimit() {
+            this.query.page = 1;
+            this.applyChange();
+        },
+        prevPage: function prevPage() {
+            if (this.collection.prev_page_url) {
+                this.query.page = Number(this.query.page) - 1;
+                this.applyChange();
+            }
+        },
+        nextPage: function nextPage() {
+            if (this.collection.next_page_url) {
+                this.query.page = Number(this.query.page) + 1;
+                this.applyChange();
+            }
+        },
         fetch: function fetch() {
             var _this = this;
 
-            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(this.url).then(function (res) {
+            var params = _extends({}, this.query);
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(this.url, { params: params }).then(function (res) {
                 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.set(_this.$data, 'collection', res.data.collection);
                 _this.query.page = res.data.collection.current_page;
             }).catch(function (error) {}).finally(function () {
